@@ -31,7 +31,8 @@ export const CONFIG_KEYS = {
   AUTH_ENABLED: 'authEnabled',
   AUTH_CREDENTIAL_ID: 'authCredentialId',
   AUTH_PASSWORD_HASH: 'authPasswordHash',
-  AUTH_PASSWORD_SALT: 'authPasswordSalt'
+  AUTH_PASSWORD_SALT: 'authPasswordSalt',
+  CLOSE_TO_TRAY: 'closeToTray'
 } as const
 
 // 当前协议版本 - 更新协议内容时递增此版本号
@@ -556,4 +557,17 @@ export async function updateAiConfigPreset(id: string, preset: Partial<Omit<AiCo
 export async function loadAiConfigPreset(id: string): Promise<AiConfigPreset | null> {
   const presets = await getAiConfigPresets()
   return presets.find(p => p.id === id) || null
+}
+
+// --- 窗口关闭行为配置 ---
+
+// 获取关闭按钮行为（true: 最小化到托盘, false: 退出应用）
+export async function getCloseToTray(): Promise<boolean> {
+  const value = await config.get(CONFIG_KEYS.CLOSE_TO_TRAY)
+  return value !== undefined ? (value as boolean) : true
+}
+
+// 设置关闭按钮行为
+export async function setCloseToTray(closeToTray: boolean): Promise<void> {
+  await config.set(CONFIG_KEYS.CLOSE_TO_TRAY, closeToTray)
 }

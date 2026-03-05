@@ -6,6 +6,8 @@
   flex-direction: column;
   padding: 16px 0;
   transition: width 0.25s ease;
+  position: relative;
+  z-index: 100;
   
   &.collapsed {
     width: 64px;

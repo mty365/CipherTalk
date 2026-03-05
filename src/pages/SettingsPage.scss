@@ -711,17 +711,20 @@
   padding: 10px 24px;
   border-radius: 9999px;
   font-size: 14px;
-  z-index: 100;
+  z-index: 10000;
   animation: slideDown 0.3s ease;
+  color: white;
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 
   &.success {
-    background: var(--primary);
-    color: white;
+    background: rgba(var(--primary-rgb), 0.75);
   }
 
   &.error {
-    background: var(--danger);
-    color: white;
+    background: rgba(239, 68, 68, 0.75);
   }
 }
 
@@ -2046,17 +2049,17 @@ to {
 // 引用样式选择器
 .quote-style-options {
   display: flex;
-  gap: 12px;
+  gap: 8px;
 
   .radio-label {
     flex: 1;
     position: relative;
-    border-radius: 12px;
-    padding: 12px;
+    border-radius: 8px;
+    padding: 8px;
     cursor: pointer;
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: 8px;
     overflow: hidden;
 
     background: linear-gradient(135deg, rgba(var(--primary-rgb), 0.08) 0%, rgba(var(--primary-rgb), 0.02) 100%);
@@ -2107,14 +2110,14 @@ to {
       flex-direction: row;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 12px;
+      gap: 8px;
       width: 100%;
 
       .radio-title {
         font-size: 14px;
         font-weight: 500;
         color: var(--text-primary);
-        margin-top: 16px;
+        margin-top: 8px;
       }
 
       .radio-desc {
@@ -2126,22 +2129,22 @@ to {
       // 预览组件样式
       .style-preview {
         flex: 1;
-        min-height: 80px;
+        min-height: 60px;
         background: transparent;
         margin-bottom: 0;
         display: flex;
         align-items: flex-start;
-        justify-content: flex-end;
-        /* 靠右展示，模拟发送方 */
-        padding: 16px 12px;
+        justify-content: flex-start;
+        /* 靠左展示，模拟接收方 */
+        padding: 10px 8px;
         border: none;
 
         .preview-avatar {
-          width: 36px;
-          height: 36px;
+          width: 28px;
+          height: 28px;
           border-radius: 50%;
           background: var(--bg-tertiary);
-          margin-left: 10px;
+          margin-right: 8px;
           flex-shrink: 0;
           object-fit: cover;
           border: 1px solid var(--border-color);
@@ -2154,10 +2157,10 @@ to {
         // 经典模式预览
         .preview-bubble.default {
           background: var(--primary);
-          /* 使用主色调，模拟发送方 */
+          /* 使用主色调，模拟接收方 */
           border: none;
-          border-radius: 12px 12px 2px 12px;
-          /* 真实气泡圆角 */
+          border-radius: 12px 12px 12px 2px;
+          /* 左下角小圆角，适合左边消息 */
           padding: 10px 12px;
           width: fit-content;
           max-width: 90%;
@@ -2188,12 +2191,12 @@ to {
           display: flex;
           flex-direction: column;
           width: 100%;
-          align-items: flex-end;
-          /* 模拟发送方 */
+          align-items: flex-start;
+          /* 模拟接收方 */
 
           .preview-bubble.wechat {
             background: var(--primary);
-            border-radius: 12px 12px 2px 12px;
+            border-radius: 12px 12px 12px 2px;
             padding: 10px 12px;
             margin-bottom: 4px;
             color: white;
@@ -2205,7 +2208,7 @@ to {
 
           .preview-quote-bubble {
             background: var(--bg-tertiary);
-            border-radius: 12px 4px 12px 12px;
+            border-radius: 4px;
             padding: 4px 10px;
             width: fit-content;
             max-width: 90%;

@@ -103,6 +103,7 @@ function SettingsPage() {
   const [message, setMessage] = useState<{ text: string; success: boolean } | null>(null)
   const [showDecryptKey, setShowDecryptKey] = useState(false)
   const [showXorKey, setShowXorKey] = useState(false)
+  const [closeToTray, setCloseToTray] = useState(true)
   const [showAesKey, setShowAesKey] = useState(false)
   const [showClearDialog, setShowClearDialog] = useState<{
     type: 'images' | 'emojis' | 'databases' | 'all' | 'config'
@@ -224,6 +225,10 @@ function SettingsPage() {
       setAiCustomSystemPromptState(savedAiCustomSystemPrompt)
       setAiEnableThinkingState(savedAiEnableThinking)
       setAiMessageLimitState(savedAiMessageLimit)
+
+      // 加载关闭行为配置
+      const savedCloseToTray = await configService.getCloseToTray()
+      setCloseToTray(savedCloseToTray)
 
     } catch (e) {
       console.error('加载配置失败:', e)
@@ -762,6 +767,9 @@ function SettingsPage() {
       await configService.setAiEnableThinking(aiEnableThinking)
       await configService.setAiMessageLimit(aiMessageLimit)
 
+      // 保存关闭行为配置
+      await configService.setCloseToTray(closeToTray)
+
       // 如果数据库配置完整，尝试设置已连接状态（不进行耗时测试，仅标记）
       if (decryptKey && dbPath && wxid && decryptKey.length === 64 && isAccountVerified) {
         setDbConnected(true, dbPath)
@@ -806,7 +814,7 @@ function SettingsPage() {
 
       <h3 className="section-title" style={{ marginTop: '2rem' }}>应用图标</h3>
       <div className="quote-style-options">
-        <label className={`radio-label ${appIcon === 'default' ? 'active' : ''}`} style={{ width: 'auto', minWidth: '180px' }}>
+        <label className={`radio-label ${appIcon === 'default' ? 'active' : ''}`} style={{ width: 'auto', minWidth: '120px' }}>
           <input
             type="radio"
             name="appIcon"
@@ -814,15 +822,14 @@ function SettingsPage() {
             checked={appIcon === 'default' || !appIcon}
             onChange={() => setAppIcon('default')}
           />
-          <div className="radio-content">
-            <span className="radio-title">默认图标</span>
+          <div className="radio-content" style={{ justifyContent: 'center' }}>
             <div className="style-preview" style={{ justifyContent: 'center', padding: '10px' }}>
               <img src="./logo.png" alt="默认" style={{ width: '48px', height: '48px' }} />
             </div>
           </div>
         </label>
 
-        <label className={`radio-label ${appIcon === 'xinnian' ? 'active' : ''}`} style={{ width: 'auto', minWidth: '180px' }}>
+        <label className={`radio-label ${appIcon === 'xinnian' ? 'active' : ''}`} style={{ width: 'auto', minWidth: '120px' }}>
           <input
             type="radio"
             name="appIcon"
@@ -830,8 +837,7 @@ function SettingsPage() {
             checked={appIcon === 'xinnian'}
             onChange={() => setAppIcon('xinnian')}
           />
-          <div className="radio-content">
-            <span className="radio-title">新年图标</span>
+          <div className="radio-content" style={{ justifyContent: 'center' }}>
             <div className="style-preview" style={{ justifyContent: 'center', padding: '10px' }}>
               <img src="./xinnian.png" alt="新年" style={{ width: '48px', height: '48px' }} />
             </div>
@@ -850,8 +856,8 @@ function SettingsPage() {
             onChange={() => setQuoteStyle('default')}
           />
           <div className="radio-content">
-            <span className="radio-title">经典样式</span>
             <div className="style-preview">
+              <img src="./logo.png" className="preview-avatar" alt="对方" />
               <div className="preview-bubble default">
                 <div className="preview-quote">
                   张三: 那天去爬山的照片...
@@ -860,7 +866,6 @@ function SettingsPage() {
                   拍得真不错！
                 </div>
               </div>
-              <img src="./logo.png" className="preview-avatar" alt="我" />
             </div>
           </div>
         </label>
@@ -874,8 +879,8 @@ function SettingsPage() {
             onChange={() => setQuoteStyle('wechat')}
           />
           <div className="radio-content">
-            <span className="radio-title">新版样式</span>
             <div className="style-preview">
+              <img src="./logo.png" className="preview-avatar" alt="对方" />
               <div className="preview-group">
                 <div className="preview-bubble wechat">
                   拍得真不错！
@@ -884,8 +889,38 @@ function SettingsPage() {
                   张三: 那天去爬山的照片...
                 </div>
               </div>
-              <img src="./logo.png" className="preview-avatar" alt="我" />
             </div>
+          </div>
+        </label>
+      </div>
+
+      <h3 className="section-title" style={{ marginTop: '2rem' }}>窗口关闭行为</h3>
+      <div className="quote-style-options">
+        <label className={`radio-label ${closeToTray ? 'active' : ''}`}>
+          <input
+            type="radio"
+            name="closeAction"
+            value="tray"
+            checked={closeToTray}
+            onChange={() => setCloseToTray(true)}
+          />
+          <div className="radio-content">
+            <span className="radio-title">最小化到托盘</span>
+            <span className="radio-desc">点击关闭按钮后，应用将最小化到系统托盘继续运行</span>
+          </div>
+        </label>
+
+        <label className={`radio-label ${!closeToTray ? 'active' : ''}`}>
+          <input
+            type="radio"
+            name="closeAction"
+            value="quit"
+            checked={!closeToTray}
+            onChange={() => setCloseToTray(false)}
+          />
+          <div className="radio-content">
+            <span className="radio-title">直接退出应用</span>
+            <span className="radio-desc">点击关闭按钮后，应用将完全退出</span>
           </div>
         </label>
       </div>
