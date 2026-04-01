@@ -70,6 +70,7 @@ let logService: LogService | null = null
 
 // 系统托盘实例
 let tray: Tray | null = null
+let isInstallingUpdate = false
 
 // 聊天窗口实例
 let chatWindow: BrowserWindow | null = null
@@ -217,6 +218,11 @@ function createWindow() {
   win.on('close', (event) => {
     const updateInfo = appUpdateService.getCachedUpdateInfo()
     if (updateInfo?.forceUpdate) {
+      app.isQuitting = true
+      return
+    }
+
+    if (isInstallingUpdate) {
       app.isQuitting = true
       return
     }
@@ -1325,6 +1331,7 @@ function registerIpcHandlers() {
 
   ipcMain.handle('app:downloadAndInstall', async (event) => {
     const win = BrowserWindow.fromWebContents(event.sender)
+    isInstallingUpdate = true
 
     // 监听下载进度
     autoUpdater.on('download-progress', (progress) => {
@@ -1333,12 +1340,14 @@ function registerIpcHandlers() {
 
     // 下载完成后自动安装
     autoUpdater.on('update-downloaded', () => {
+      app.isQuitting = true
       autoUpdater.quitAndInstall(false, true)
     })
 
     try {
       await autoUpdater.downloadUpdate()
     } catch (error) {
+      isInstallingUpdate = false
       console.error('下载更新失败:', error)
       throw error
     }
